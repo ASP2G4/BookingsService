@@ -1,4 +1,5 @@
 using Infrastructure.Data.Contexts;
+using Infrastructure.Messaging;
 using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,10 @@ builder.Services.AddOpenApi();
 builder.Services.AddScoped<BookingRepo>();
 
 builder.Services.AddScoped<BookingService>();
+
+builder.Services.AddScoped<InvoiceServiceBus>(x => new InvoiceServiceBus(
+    builder.Configuration["AzureServiceBusSettings:ConnectionString"],
+    builder.Configuration["AzureServiceBusSettings:InvoiceQueueName"]));
 
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
 
