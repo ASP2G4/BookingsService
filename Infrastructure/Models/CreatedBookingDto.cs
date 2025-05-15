@@ -4,6 +4,6 @@ public class CreatedBookingDto
 {
     public int Id { get; set; }
     public int Tickets { get; set; }
-    public Guid EventId { get; set; }
-    public Guid UserId { get; set; }
+    public string EventId { get; set; } = null!;
+    public string UserId { get; set; } = null!;
 }
