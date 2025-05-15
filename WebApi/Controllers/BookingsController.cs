@@ -35,14 +35,14 @@ public class BookingsController(BookingService bookingService) : ControllerBase
     }
 
     [HttpGet("user/{userId}")]
-    public async Task<IActionResult> GetAllByUserId(Guid userId)
+    public async Task<IActionResult> GetAllByUserId(string userId)
     {
         var bookings = await _bookingService.GetAllBookingsByUserIdAsync(userId);
         return bookings == null ? NotFound() : Ok(bookings);
     }
 
     [HttpGet("event/{eventId}")]
-    public async Task<IActionResult> GetAllByEventId(Guid eventId)
+    public async Task<IActionResult> GetAllByEventId(string eventId)
     {
         var bookings = await _bookingService.GetAllBookingsByEventIdAsync(eventId);
         return bookings == null ? NotFound() : Ok(bookings);

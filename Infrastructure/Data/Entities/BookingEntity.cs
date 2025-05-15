@@ -8,8 +8,8 @@ public class BookingEntity
     public int Id { get; set; }
     public int Tickets { get; set; }
     public DateTime CreatedAt { get; private set; }
-    public Guid EventId { get; set; }
-    public Guid UserId { get; set; }
+    public string EventId { get; set; }
+    public string UserId { get; set; }
     public bool Invoiced { get; set; }
     public bool Paid { get; set; }
     public bool Cancelled { get; set; }
