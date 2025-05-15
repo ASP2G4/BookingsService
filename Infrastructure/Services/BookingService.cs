@@ -26,18 +26,18 @@ public class BookingService(BookingRepo bookingRepo)
         return bookings;
     }
 
-    public async Task<IEnumerable<BookingEntity>?> GetAllBookingsByUserIdAsync(Guid userId)
+    public async Task<IEnumerable<BookingEntity>?> GetAllBookingsByUserIdAsync(string userId)
     {
-        if (userId == Guid.Empty)
+        if (userId == string.Empty)
             return null;
 
         var bookings = await _bookingRepo.GetAllAsync(x => x.UserId == userId);
         return bookings ?? null;
     }
 
-    public async Task<IEnumerable<BookingEntity>?> GetAllBookingsByEventIdAsync(Guid eventId)
+    public async Task<IEnumerable<BookingEntity>?> GetAllBookingsByEventIdAsync(string eventId)
     {
-        if (eventId == Guid.Empty)
+        if (eventId == string.Empty)
             return null;
 
         var bookings = await _bookingRepo.GetAllAsync(x => x.EventId == eventId);
