@@ -1,13 +1,16 @@
 ﻿using Infrastructure.Data.Entities;
 using Infrastructure.Mappers;
+using Infrastructure.Messaging;
 using Infrastructure.Models;
 using Infrastructure.Repositories;
 
 namespace Infrastructure.Services;
 
-public class BookingService(BookingRepo bookingRepo)
+public class BookingService(BookingRepo bookingRepo, InvoiceServiceBus invoiceBus, EmailServiceBus emailBus)
 {
     private readonly BookingRepo _bookingRepo = bookingRepo;
+    private readonly InvoiceServiceBus _invoiceBus = invoiceBus;
+    private readonly EmailServiceBus _emailBus = emailBus;
 
     public async Task<bool> CreateBookingAsync(AddBookingForm formData)
     {
@@ -15,9 +18,30 @@ public class BookingService(BookingRepo bookingRepo)
             return false;
 
         var booking = BookingMapper.ToEntity(formData);
+        try
+        {
+            bool result = await _bookingRepo.AddAsync(booking);
+            await _invoiceBus.SendCreatedBookingAsync(new CreatedBookingDto
+            {
+                Id = booking.Id,
+                Tickets = booking.Tickets,
+                EventId = booking.EventId,
+                UserId = booking.UserId,
+            });
+            await _emailBus.SendCreatedBookingAsync(new CreatedBookingDto
+            {
+                Id = booking.Id,
+                Tickets = booking.Tickets,
+                EventId = booking.EventId,
+                UserId = booking.UserId,
+            });
 
-        bool result = await _bookingRepo.AddAsync(booking);
-        return result;
+            return result;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public async Task<IEnumerable<BookingEntity>> GetAllBookingsAsync()
