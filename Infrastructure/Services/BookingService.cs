@@ -6,10 +6,11 @@ using Infrastructure.Repositories;
 
 namespace Infrastructure.Services;
 
-public class BookingService(BookingRepo bookingRepo, InvoiceServiceBus invoiceBus)
+public class BookingService(BookingRepo bookingRepo, InvoiceServiceBus invoiceBus, EmailServiceBus emailBus)
 {
     private readonly BookingRepo _bookingRepo = bookingRepo;
     private readonly InvoiceServiceBus _invoiceBus = invoiceBus;
+    private readonly EmailServiceBus _emailBus = emailBus;
 
     public async Task<bool> CreateBookingAsync(AddBookingForm formData)
     {
@@ -21,6 +22,13 @@ public class BookingService(BookingRepo bookingRepo, InvoiceServiceBus invoiceBu
         {
             bool result = await _bookingRepo.AddAsync(booking);
             await _invoiceBus.SendCreatedBookingAsync(new CreatedBookingDto
+            {
+                Id = booking.Id,
+                Tickets = booking.Tickets,
+                EventId = booking.EventId,
+                UserId = booking.UserId,
+            });
+            await _emailBus.SendCreatedBookingAsync(new CreatedBookingDto
             {
                 Id = booking.Id,
                 Tickets = booking.Tickets,

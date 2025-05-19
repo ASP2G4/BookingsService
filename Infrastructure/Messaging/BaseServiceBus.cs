@@ -3,7 +3,12 @@ using System.Text.Json;
 
 namespace Infrastructure.Messaging;
 
-public class BaseServiceBus<TModel>
+public interface IBaseServiceBus<TModel>
+{
+    Task<bool> SendCreatedBookingAsync(TModel bookingModel);
+}
+
+public class BaseServiceBus<TModel> : IBaseServiceBus<TModel>
 {
     private readonly ServiceBusClient _client;
     private readonly ServiceBusSender _sender;
